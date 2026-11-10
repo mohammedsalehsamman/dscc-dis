@@ -1,0 +1,8 @@
+# Normalize line endings; keep Windows scripts as CRLF and Unix scripts as LF
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.jar binary
+*.db  binary
+*.png binary
+*.gif binary

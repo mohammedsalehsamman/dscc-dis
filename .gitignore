@@ -1,0 +1,24 @@
+# Build output
+target/
+*.class
+
+# Runtime data: SQLite databases are created and filled with sample data on first start
+**/data/*.db
+**/data/*.db-journal
+*.log
+
+# IDEs
+nbproject/private/
+nb-configuration.xml
+nbactions.xml
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store

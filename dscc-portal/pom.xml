@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>dscc</groupId>
+        <artifactId>dscc-dis</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>dscc-portal</artifactId>
+    <name>DSCC Portal</name>
+    <description>Single sign-on desktop portal for both systems (employees over SOAP, library over RMI).</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>dscc</groupId>
+            <artifactId>employee-soap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dscc</groupId>
+            <artifactId>library-rmi</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>dscc.portal.PortalApp</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>dscc</groupId>
+        <artifactId>dscc-dis</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>library-rmi</artifactId>
+    <name>Library RMI</name>
+    <description>Library Java RMI server with real-time callbacks, its Swing clients, and a SOAP client
+        (generated from the Employee WSDL) used to verify staff.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>dscc</groupId>
+            <artifactId>dscc-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>library.server.LibraryServer</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!--
+            Regenerates the SOAP client in src/main/java/library/integration/soap from the live WSDL.
+            Start the Employee SOAP server first, then:  mvnw -pl library-rmi -Pwsimport generate-sources
+            (override the server with -Dsoap.url=http://host:8080)
+        -->
+        <profile>
+            <id>wsimport</id>
+            <properties>
+                <soap.url>http://localhost:8080</soap.url>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.sun.xml.ws</groupId>
+                        <artifactId>jaxws-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.sun.xml.ws</groupId>
+                                <artifactId>jaxws-tools</artifactId>
+                                <version>${jaxws.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <sourceDestDir>${project.basedir}/src/main/java</sourceDestDir>
+                            <keep>true</keep>
+                            <xnocompile>true</xnocompile>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>wsimport-auth</id>
+                                <goals>
+                                    <goal>wsimport</goal>
+                                </goals>
+                                <configuration>
+                                    <wsdlUrls>
+                                        <wsdlUrl>${soap.url}/AuthService?wsdl</wsdlUrl>
+                                    </wsdlUrls>
+                                    <packageName>library.integration.soap.auth</packageName>
+                                    <staleFile>${project.build.directory}/jaxws/stale/auth.stale</staleFile>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>wsimport-employee</id>
+                                <goals>
+                                    <goal>wsimport</goal>
+                                </goals>
+                                <configuration>
+                                    <wsdlUrls>
+                                        <wsdlUrl>${soap.url}/EmployeeService?wsdl</wsdlUrl>
+                                    </wsdlUrls>
+                                    <packageName>library.integration.soap.employee</packageName>
+                                    <staleFile>${project.build.directory}/jaxws/stale/employee.stale</staleFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
